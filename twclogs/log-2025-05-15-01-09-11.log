@@ -1,0 +1,4 @@
+2025-05-15 01:09:11.418 [SUCCESS] ✅ Hydrated channels with: News, Trinidad and Tobago
+2025-05-15 01:09:22.209 [DEBUG] 🐞 CompleteRoutine... waiting for JobsCompleteChannel input
+2025-05-15 01:09:22.209 [DEBUG] 🐞 ScrapeRoutine... waiting for PreContentChannel input
+2025-05-15 01:09:22.209 [DEBUG] 🐞 JobsRoutine... waiting for PreResultsChannel input
