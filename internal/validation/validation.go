@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/renniemaharaj/news/internal/types"
+	"github.com/renniemaharaj/news-go/internal/types"
 )
 
 func Validate(resp string) error {

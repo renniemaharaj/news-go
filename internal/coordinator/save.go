@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/renniemaharaj/news/internal/log"
-	"github.com/renniemaharaj/news/internal/types"
+	"github.com/renniemaharaj/news-go/internal/log"
+	"github.com/renniemaharaj/news-go/internal/types"
 )
 
 func Save(r *types.Report, l *log.Logger) {

@@ -3,8 +3,8 @@ package coordinator
 import (
 	"time"
 
-	"github.com/renniemaharaj/news/internal/log"
-	"github.com/renniemaharaj/news/internal/types"
+	"github.com/renniemaharaj/news-go/internal/log"
+	"github.com/renniemaharaj/news-go/internal/types"
 )
 
 func CompleteRoutine(l *log.Logger) {

@@ -1,6 +1,6 @@
 package coordinator
 
-import "github.com/renniemaharaj/news/internal/types"
+import "github.com/renniemaharaj/news-go/internal/types"
 
 var PreResultsChannel = make(chan types.Report, 100)
 

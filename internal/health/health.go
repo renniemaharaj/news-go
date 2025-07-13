@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/renniemaharaj/news/internal/log"
+	"github.com/renniemaharaj/news-go/internal/log"
 )
 
 // HealthHandler responds to healthcheck requests

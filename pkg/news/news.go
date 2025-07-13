@@ -3,10 +3,10 @@ package news
 import (
 	"fmt"
 
-	"github.com/renniemaharaj/news/internal/config"
-	"github.com/renniemaharaj/news/internal/coordinator"
-	"github.com/renniemaharaj/news/internal/log"
-	"github.com/renniemaharaj/news/internal/types"
+	"github.com/renniemaharaj/news-go/internal/config"
+	"github.com/renniemaharaj/news-go/internal/coordinator"
+	"github.com/renniemaharaj/news-go/internal/log"
+	"github.com/renniemaharaj/news-go/internal/types"
 )
 
 type Instance struct {

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/renniemaharaj/news/internal/log"
+	"github.com/renniemaharaj/news-go/internal/log"
 )
 
 // Domains to skip during search results

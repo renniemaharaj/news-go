@@ -10,7 +10,7 @@ import (
 
 	"golang.org/x/net/html"
 
-	"github.com/renniemaharaj/news/internal/log"
+	"github.com/renniemaharaj/news-go/internal/log"
 )
 
 func GetLinkAttribute(t html.Token, l *log.Logger) (string, bool) {

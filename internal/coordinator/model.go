@@ -3,9 +3,9 @@ package coordinator
 import (
 	"time"
 
-	"github.com/renniemaharaj/news/internal/log"
-	"github.com/renniemaharaj/news/internal/model"
-	"github.com/renniemaharaj/news/internal/types"
+	"github.com/renniemaharaj/news-go/internal/log"
+	"github.com/renniemaharaj/news-go/internal/model"
+	"github.com/renniemaharaj/news-go/internal/types"
 )
 
 func ModelsRoutine(l *log.Logger) {

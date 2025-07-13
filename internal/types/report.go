@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/renniemaharaj/news/internal/browser"
-	"github.com/renniemaharaj/news/internal/log"
+	"github.com/renniemaharaj/news-go/internal/browser"
+	"github.com/renniemaharaj/news-go/internal/log"
 )
 
 // The model should not populate !System's
