@@ -1,10 +1,10 @@
-# 📰 News-Go — AI-Powered Christian News Evaluator
+# News-Go — AI-Powered Christian News Evaluator
 
 **News-Go** is a lightweight Go-based pipeline for scraping, analyzing, and evaluating news articles through a biblical and AI-augmented lens. It uses concurrent Go routines to fetch and process online news, while a local large language model (LLM) scores the content against a custom Christian framework.
 
 ---
 
-## ✝️ Purpose
+## Purpose
 
 To defend the faith and evaluate media content through scripture-aligned reasoning using AI. The model's mission is fixed: **God is**, the **KJV Bible** is authoritative, and **Jesus Christ is Lord**.
 
@@ -73,7 +73,7 @@ func main() {
 
 ---
 
-## 🧠 Models Used
+## Models Used
 
 All LLM evaluation is performed locally — **no API keys, no rate limits**.
 
