@@ -55,13 +55,13 @@ func (r *Result) PopulateTextContent(body io.Reader, l *log.Logger) {
 	}
 
 	textContent, err := browser.ExtractTextContent(body)
-	if err != nil {
+	if err != nil || textContent == "" {
 		l.Error(fmt.Sprintf("Error scraping for text content from: %s", r.HREF))
 		return
 	}
 
 	r.TextContent = textContent
-
+	l.Success(r.TextContent)
 }
 
 // Function to populate report result images

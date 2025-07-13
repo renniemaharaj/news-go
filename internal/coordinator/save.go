@@ -25,14 +25,21 @@ func Save(r *types.Report, l *log.Logger) {
 		return
 	}
 
+	title := strings.TrimSpace(r.Title)
+	if title == "" {
+		title = "untitled"
+	}
+	sanitizedTitle := sanitizeFilename(title)
+
 	// Create file name based on title and date
 	fileName := fmt.Sprintf("./reports/%s_%s.json",
-		strings.ReplaceAll(r.Title, " ", "_"),
+		sanitizedTitle,
 		time.Now().Format("20060102_150405"))
 
 	// Write to file
 	if err := os.WriteFile(fileName, jsonBytes, 0644); err != nil {
 		l.Error(fmt.Sprintf(("Failed to write report: %s"), err.Error()))
+		l.Error(fileName)
 		return
 	}
 

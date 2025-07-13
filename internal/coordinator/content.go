@@ -21,7 +21,7 @@ func ContentRoutine(l *log.Logger) {
 }
 
 func scrapeContent(r *types.Report, l *log.Logger) {
-	for _, result := range r.Results {
-		result.RequestContent(l)
+	for i := range r.Results {
+		r.Results[i].RequestContent(l)
 	}
 }

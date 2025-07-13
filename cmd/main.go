@@ -1,6 +1,8 @@
 package main
 
-import "github.com/renniemaharaj/news-go/pkg/news"
+import (
+	"github.com/renniemaharaj/news-go/pkg/news"
+)
 
 func main() {
 	n := news.Instance{}
@@ -10,4 +12,5 @@ func main() {
 	n.HydrateJobs()
 
 	select {} // blocks forever
+
 }

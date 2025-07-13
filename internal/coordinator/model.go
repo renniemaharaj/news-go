@@ -24,8 +24,9 @@ func ModelsRoutine(l *log.Logger) {
 
 func transform(r *types.Report, l *log.Logger) {
 	var results []types.Result
-	for _, result := range r.Results {
-		result, err := model.Prompt(result)
+	for i := range r.Results {
+		result, err := model.Transform(&r.Results[i], l)
+
 		if err != nil {
 			l.Error("Error transforming result")
 		}
