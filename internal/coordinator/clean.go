@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/renniemaharaj/news-go/internal/config"
-	"github.com/renniemaharaj/news-go/internal/storage/store"
+	"github.com/renniemaharaj/news-go/internal/store"
 )
 
 // Coordinator's store, scheduled audit routine

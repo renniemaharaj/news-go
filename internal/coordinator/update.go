@@ -6,7 +6,7 @@ import (
 
 	"github.com/renniemaharaj/news-go/internal/config"
 	"github.com/renniemaharaj/news-go/internal/document"
-	"github.com/renniemaharaj/news-go/internal/storage/store"
+	"github.com/renniemaharaj/news-go/internal/store"
 )
 
 // Update routine scheduler

@@ -32,11 +32,10 @@ func (i *Instance) GetUpdatedReports(l *log.Logger) []string {
 	i.ForEach(func(k string, r *document.Report) {
 		reportTime, err := time.Parse(reportTimeLayout, r.Date)
 		if err != nil {
-			l.Error("Forced to assume report as updated: time parsing error")
-			return
+			l.Error("Forced to assume report as outdated: time parsing error")
 		}
 
-		if time.Since(reportTime) < UpdateInterval {
+		if err != nil || time.Since(reportTime) < UpdateInterval {
 			titles = append(titles, k)
 		}
 	})

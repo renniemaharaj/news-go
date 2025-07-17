@@ -4,7 +4,7 @@ import (
 	"github.com/renniemaharaj/news-go/internal/document"
 	"github.com/renniemaharaj/news-go/internal/log"
 	"github.com/renniemaharaj/news-go/internal/reporter"
-	"github.com/renniemaharaj/news-go/internal/storage/store"
+	"github.com/renniemaharaj/news-go/internal/store"
 )
 
 type Instance struct {
