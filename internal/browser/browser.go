@@ -1,35 +1,92 @@
 package browser
 
 import (
-	"fmt"
-	"net/http"
+	"context"
+	"sync"
+	"time"
 
+	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/launcher"
 	"github.com/renniemaharaj/news-go/internal/log"
 )
 
-// Domains to skip during search results
-var skipDomains = map[string]struct{}{
-	"maps.google.com":   {},
-	"photos.google.com": {},
+type Instance struct {
+	rod     *rod.Browser
+	once    sync.Once
+	initErr error
+	l       *log.Logger
 }
 
-// Creates an HTTP request with a user-agent
-func httpRequester(target string) *http.Request {
-	req, _ := http.NewRequest("GET", target, nil)
-	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
-	return req
+var singleton *Instance
+
+// Initialize launches the singleton browser instance
+func Initialize() error {
+	singleton = &Instance{}
+	singleton.l = createLogger()
+	singleton.once.Do(func() {
+		path := launcher.New().Headless(true).
+			Leakless(true).
+			Set("disable-blink-features", "AutomationControlled").
+			MustLaunch()
+
+		singleton.rod = rod.New().ControlURL(path)
+		singleton.initErr = singleton.rod.Connect()
+		if singleton.initErr != nil {
+			singleton.l.Error("Browser failed to connect: " + singleton.initErr.Error())
+		}
+	})
+	return singleton.initErr
 }
 
-// Main function to perform a request
-func Request(url string, l *log.Logger) (*http.Response, error) {
-	l.Info(fmt.Sprintf("Visiting site for body scraping: %s", url))
+// Get returns the singleton instance, initializing if necessary
+func Get() *Instance {
+	if singleton == nil {
+		if err := Initialize(); err != nil {
+			return nil
+		}
+	}
+	return singleton
+}
 
-	req := httpRequester(url)
-	resp, err := http.DefaultClient.Do(req)
+// Read performs a headless spoofed browser request and returns text + thumbnails
+func (i *Instance) Read(targetURL string) (string, []string, error) {
+
+	page := i.rod.MustPage("")
+	defer page.MustClose()
+
+	spoofBrowser(page, i.l)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
+	err := page.Context(ctx).Navigate(targetURL)
 	if err != nil {
-		l.Error(fmt.Sprintf("Error scraping site body from: %s", url))
-		return nil, err
+		i.l.Error("Navigation failed: " + err.Error())
+		return "", nil, err
 	}
 
-	return resp, nil
+	page.MustWaitLoad()
+
+	body, err := page.Element("body")
+	if err != nil {
+		i.l.Warning("Could not read site: " + err.Error())
+		return "", nil, err
+	}
+
+	text, err := body.Text()
+	if err != nil {
+		i.l.Warning("Could not extract text: " + err.Error())
+		return "", nil, err
+	}
+
+	imgEls, _ := page.Elements("img")
+	var thumbs []string
+	for _, img := range imgEls {
+		src, _ := img.Attribute("src")
+		if src != nil && isLikelyThumbnail(*src) {
+			thumbs = append(thumbs, resolveURL(*src, targetURL))
+		}
+	}
+
+	return text, thumbs, nil
 }

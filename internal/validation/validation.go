@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/renniemaharaj/news-go/internal/types"
+	"github.com/renniemaharaj/news-go/internal/document"
 )
 
 func Validate(resp string) error {
-	var result types.Result
+	var result document.Result
 	err := json.Unmarshal([]byte(resp), &result)
 	if err != nil {
 		return err

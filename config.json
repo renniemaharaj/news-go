@@ -1,5 +1,14 @@
 {
-  "searchQueries": ["News, Trinidad and Tobago"],
-
-  "num_sites_per_query": 2
+  "port": ":7777",
+  "debugging": false,
+  "searchQueries": [
+    "Artificial Intelligence Trends",
+    "Global Tech News",
+    "AI and Social Media Analysis",
+    "Christian Perspectives on AI",
+    "Biblical Views on Technology",
+    "Middle East News",
+    "Latest Middle East Developments"
+  ],
+  "num_sites_per_query": 10
 }

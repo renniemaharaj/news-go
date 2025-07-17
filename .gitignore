@@ -1,3 +1,6 @@
 /models/
 /twclogs/
+/reports/
+*.cache_ggshield
+*.env
 *.gguf

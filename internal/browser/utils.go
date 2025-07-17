@@ -6,13 +6,13 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-	"time"
 
 	"golang.org/x/net/html"
 
 	"github.com/renniemaharaj/news-go/internal/log"
 )
 
+// Responsible for getting link elements's href
 func GetLinkAttribute(t html.Token, l *log.Logger) (string, bool) {
 	if t.Data != "a" {
 		return "", false
@@ -46,27 +46,22 @@ func GetLinkAttribute(t html.Token, l *log.Logger) (string, bool) {
 	return "", false
 }
 
-// Builds a google-based search url using query for five news report
-func searchNewsURL(query string) string {
-	queryWithContext := fmt.Sprintf("%s - %s", query, time.Now().Format("2006-01-02"))
-	joinedQuery := strings.ReplaceAll(queryWithContext, " ", "+")
-	return "https://www.google.com/search?q=" + joinedQuery + "&num=5&tbm=nws"
-}
-
 func isLikelyThumbnail(src string) bool {
 	lower := strings.ToLower(src)
 
+	// First attempt to filter out by filenames
 	return !strings.Contains(lower, "logo") &&
 		!strings.Contains(lower, "icon") &&
 		!strings.Contains(lower, "svg") &&
 		!strings.Contains(lower, "placeholder") &&
 
-		//Extensions
-
+		// Extensions Allowed
 		(strings.HasSuffix(lower, ".jpg") ||
 			strings.HasSuffix(lower, ".jpeg") ||
 			strings.HasSuffix(lower, ".png") ||
-			strings.HasSuffix(lower, ".webp"))
+			strings.HasSuffix(lower, ".webp") ||
+			strings.HasSuffix(lower, "gif"))
+
 }
 
 func resolveURL(link string, base string) string {

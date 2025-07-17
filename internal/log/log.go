@@ -18,6 +18,8 @@ type Logger struct {
 	MaxLines    int
 	ToStdout    bool
 	JSONMode    bool
+	Prefix      string
+	Debugging   bool
 }
 
 var prefixes = map[string]string{
@@ -30,15 +32,17 @@ var prefixes = map[string]string{
 
 var twclogsDir = "twclogs"
 
-func NewLogger(maxLines int, toStdout bool, jsonMode bool) *Logger {
+func CreateLogger(prefix string, maxLines int, toStdout bool, jsonMode bool, debugging bool) *Logger {
 	if err := os.MkdirAll(twclogsDir, 0755); err != nil {
 		panic("Failed to create log directory: " + err.Error())
 	}
 
 	l := &Logger{
-		MaxLines: maxLines,
-		ToStdout: toStdout,
-		JSONMode: jsonMode,
+		Prefix:    prefix,
+		MaxLines:  maxLines,
+		ToStdout:  toStdout,
+		JSONMode:  jsonMode,
+		Debugging: debugging,
 	}
 	l.rotate()
 
@@ -73,13 +77,14 @@ func (l *Logger) log(level string, msg string) {
 	timestamp := time.Now().Format("2006-01-02 15:04:05.000")
 	prefix := prefixes[level]
 
-	line := fmt.Sprintf("%s [%s] %s %s", timestamp, strings.ToUpper(level), prefix, msg)
+	line := fmt.Sprintf("%s: %s [%s %s] %s", timestamp, strings.ToUpper(level), prefix, l.Prefix, msg)
 
 	if l.JSONMode {
 		logObj := map[string]interface{}{
-			"time":  timestamp,
-			"level": level,
-			"msg":   msg,
+			"Prefix": l.Prefix,
+			"time":   timestamp,
+			"level":  level,
+			"msg":    msg,
 		}
 		jsonBytes, _ := json.Marshal(logObj)
 		line = string(jsonBytes)
@@ -105,7 +110,10 @@ func (l *Logger) Info(msg string) {
 }
 
 func (l *Logger) Debug(msg string) {
-	l.log("debug", msg)
+	if l.Debugging {
+		l.log("debug", msg)
+	}
+
 }
 
 func (l *Logger) Success(msg string) {

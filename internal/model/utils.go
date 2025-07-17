@@ -13,22 +13,28 @@ func parseCommaList(s string) []string {
 	return parts
 }
 
-// LintCodeFences removes ```html from the start and ``` from the end of the input string.
+// LintCodeFences removes ```<lang> and ``` fences from an input string.
 func LintCodeFences(input *string, language string) *string {
-	codeFenceStart := fmt.Sprintf("```%v", language)
-	const codeFenceEnd = "```"
+	// Normalize input
+	trimmed := strings.TrimSpace(*input)
 
-	// trim the starting "```html"
-	*input = strings.TrimPrefix(*input, codeFenceStart)
+	// Remove starting fence (with or without language, with optional newline)
+	prefixWithLang := fmt.Sprintf("```%s\n", language)
+	prefixPlain := "```\n"
+	if strings.HasPrefix(trimmed, prefixWithLang) {
+		trimmed = strings.TrimPrefix(trimmed, prefixWithLang)
+	} else if strings.HasPrefix(trimmed, prefixPlain) {
+		trimmed = strings.TrimPrefix(trimmed, prefixPlain)
+	} else if strings.HasPrefix(trimmed, "```"+language) {
+		trimmed = strings.TrimPrefix(trimmed, "```"+language)
+	} else if strings.HasPrefix(trimmed, "```") {
+		trimmed = strings.TrimPrefix(trimmed, "```")
+	}
 
-	// trim any leading/trailing whitespace or newlines to better detect the ending code fence
-	*input = strings.TrimSpace(*input)
+	// Remove trailing fence (with or without preceding newline)
+	trimmed = strings.TrimSpace(trimmed)
+	trimmed = strings.TrimSuffix(trimmed, "```")
 
-	// trim the ending "```"
-	*input = strings.TrimSuffix(*input, codeFenceEnd)
-
-	// trim excess whitespace again
-	trimmedInput := strings.TrimSpace(*input)
-
-	return &trimmedInput
+	trimmed = strings.TrimSpace(trimmed)
+	return &trimmed
 }

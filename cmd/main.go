@@ -1,16 +1,13 @@
 package main
 
 import (
-	"github.com/renniemaharaj/news-go/pkg/news"
+	"github.com/renniemaharaj/news-go/internal/coordinator"
+	"github.com/renniemaharaj/news-go/internal/server"
 )
 
 func main() {
-	n := news.Instance{}
+	coordinator.Initialize()
 
-	n.CreateLogger()
-	go n.GoRoutines()
-	n.HydrateJobs()
-
-	select {} // blocks forever
-
+	go server.Serve()
+	select {}
 }
