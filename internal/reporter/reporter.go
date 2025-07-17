@@ -33,7 +33,7 @@ func (i *Instance) InitializeChannels(b1 int16, b2 int16, b3 int16, b4 int16) {
 func (i *Instance) ReadyRoutines(l *log.Logger, CHILD chan document.Report) {
 
 	go routines.Search(l, i.TODO_SEARCH_CHANNEL, i.TODO_SCRAPE_CHANNEL)
-	go routines.Scrape(l, i.TODO_SCRAPE_CHANNEL, i.TODO_TRANSFORM_CHANNEL)
+	go routines.Content(l, i.TODO_SCRAPE_CHANNEL, i.TODO_TRANSFORM_CHANNEL)
 	go routines.Transform(l, i.TODO_TRANSFORM_CHANNEL, i.TODO_PERSIST_CHANNEL)
-	go routines.Persist(l, i.TODO_PERSIST_CHANNEL, CHILD)
+	go routines.Store(l, i.TODO_PERSIST_CHANNEL, CHILD)
 }

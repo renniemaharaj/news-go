@@ -35,7 +35,7 @@ func (i *Instance) GetUpdatedReports(l *log.Logger) []string {
 			l.Error("Forced to assume report as outdated: time parsing error")
 		}
 
-		if err != nil || time.Since(reportTime) < UpdateInterval {
+		if time.Since(reportTime) < UpdateInterval {
 			titles = append(titles, k)
 		}
 	})

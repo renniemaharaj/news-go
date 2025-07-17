@@ -7,24 +7,24 @@ import (
 	"github.com/renniemaharaj/news-go/internal/log"
 )
 
-// Coordinators Scrape routine
-func Scrape(l *log.Logger, PARENT chan document.Report, CHILD chan document.Report) {
+// Coordinators Content routine
+func Content(l *log.Logger, PARENT chan document.Report, CHILD chan document.Report) {
 
 	for {
 		select {
 		case r := <-PARENT:
-			l.Info("SCRAPE_WORKER: Using browser")
-			scrape(&r, l)
+			l.Info("#2 CONTENT: Getting site contents")
+			content(&r, l)
 			CHILD <- r
-			l.Info("SCRAPE_WORKER: Completed a job")
+			l.Info("#2 CONTENT: Completed a job")
 		case <-time.After(10 * time.Second):
-			l.Debug("SCRAPE_WORKER: Waiting for jobs")
+			l.Debug("#2 CONTENT: Waiting for jobs")
 		}
 	}
 }
 
 // Helper function
-func scrape(r *document.Report, l *log.Logger) {
+func content(r *document.Report, l *log.Logger) {
 	for i := range r.Results {
 		r.Results[i].RequestContent(l)
 	}

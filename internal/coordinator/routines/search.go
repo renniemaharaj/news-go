@@ -15,13 +15,12 @@ func Search(l *log.Logger, PARENT chan document.Report, CHILD chan document.Repo
 	for {
 		select {
 		case r := <-PARENT:
-			l.Info("SEARCH_WORKER: Using browser")
+			l.Info("#1 SEARCH: Doing web searches")
 			search(&r, l)
 			CHILD <- r
-			l.Info("SEARCH_WORKER: Completed a job, sleeping 3s")
-			time.Sleep(3 * time.Second)
+			l.Info("#1 SEARCH: Completed a job")
 		case <-time.After(10 * time.Second):
-			l.Debug("SEARCH_WORKER: Waiting for jobs")
+			l.Debug("#1 SEARCH: Waiting for jobs")
 		}
 	}
 }
