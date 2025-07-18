@@ -16,7 +16,7 @@ type Report struct {
 }
 
 func (r *Report) CollectResults(l *log.Logger, sitesPerQuery int) error {
-	results, err := browser.Search(r.SearchQuery, sitesPerQuery, l)
+	results, err := browser.Get().Search(r.SearchQuery, sitesPerQuery)
 	if err != nil {
 		l.Error(fmt.Sprintf("Error getting google results: %s", r.SearchQuery))
 		return err

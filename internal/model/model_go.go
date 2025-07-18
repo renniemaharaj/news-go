@@ -10,9 +10,9 @@ import (
 
 func (i *Instance) Prompt(msg string) (string, error) {
 	i.mu.Lock()
-	i.l.Debug("Entering transformation request stage")
-	defer i.mu.Unlock()
+	i.l.Info("Analyzing content")
 
+	defer i.mu.Unlock()
 	// Define payload structure
 	payload := map[string]interface{}{
 		"model": "smollm3-3b", // or dynamic if needed

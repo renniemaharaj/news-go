@@ -13,10 +13,8 @@ func Store(l *log.Logger, PARENT chan document.Report, CHILD chan document.Repor
 	for {
 		select {
 		case r := <-PARENT:
-			l.Info("#4 STORE: Completing a report")
 			store(&r, l)
 			CHILD <- r
-			l.Info("#4 STORE: Persisted completed job")
 		case <-time.After(10 * time.Second):
 			l.Debug("#4 STORE: waiting for jobs")
 		}

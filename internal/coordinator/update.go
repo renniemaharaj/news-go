@@ -36,14 +36,14 @@ func (i *Instance) updateRoutine(storeInstance *store.Instance) {
 	for _, query := range searchQueries {
 		if _, exists := upToDateMap[store.SanitizeFilename(query)]; !exists {
 			i.r.TODO_SEARCH_CHANNEL <- document.ReportFromQuery(query)
-			i.l.Info(fmt.Sprintf("Queueing search for outdated query: %s", query))
+			i.l.Info(fmt.Sprintf("Will updated: %s", query))
 		}
 	}
 
 	// 4) Read from reporter channel and persist
 	go func() {
 		for report := range i.c {
-			i.l.Info(fmt.Sprintf("Received updated report: %s", report.SearchQuery))
+			i.l.Info(fmt.Sprintf("Report completed: %s", report.SearchQuery))
 			storeInstance.StoreReport(&report, i.l)
 		}
 	}()

@@ -22,7 +22,7 @@ type Result struct {
 
 // Function requests and returns http response to reduce required requests
 func (r *Result) RequestContent(l *log.Logger) error {
-	textContent, images, err := browser.Get().Read(r.HREF)
+	textContent, images, err := browser.Get().Content(r.HREF)
 	if err != nil {
 		l.Error(fmt.Sprintf("Failed to read site: %s", r.HREF))
 		return err

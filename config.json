@@ -1,7 +1,7 @@
 {
   "port": ":7777",
   "debugging": false,
-  "num_sites_per_query": 10,
+  "num_sites_per_query": 5,
   "searchQueries": [
     "Emerging Trends in Artificial Intelligence",
     "AI Ethics and Societal Impact",

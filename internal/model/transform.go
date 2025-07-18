@@ -13,18 +13,18 @@ func Transform(result *document.Result, l *log.Logger) (document.Result, error) 
 	var err error
 
 	if result.TextContent == "" {
-		return *result, fmt.Errorf("result had no text content: %w", err)
+		return *result, fmt.Errorf("result had no text content")
 	}
 
 	transformPrompt, err := instructions.BuildTransformPrompt(result.TextContent)
 	if err != nil {
-		return *result, fmt.Errorf("result had no text content: %w", err)
+		return *result, fmt.Errorf("result had no text content: %s", err.Error())
 	}
 
 	transformResponse, err := Get().Prompt(transformPrompt)
 
 	if err != nil {
-		return *result, fmt.Errorf("transformation failed: %w", err)
+		return *result, fmt.Errorf("transformation failed: %s", err.Error())
 	}
 
 	transformed := Transformed{}

@@ -1,12 +1,11 @@
 package browser
 
 import (
-	"context"
 	"sync"
-	"time"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
+
 	"github.com/renniemaharaj/news-go/internal/log"
 )
 
@@ -15,9 +14,22 @@ type Instance struct {
 	once    sync.Once
 	initErr error
 	l       *log.Logger
+	m       sync.Mutex
 }
 
 var singleton *Instance
+
+// Skip known domains that aren’t news sources
+var skipDomains = map[string]struct{}{
+	"www.google.com":                 {},
+	"policies.google.com":            {},
+	"www.google.tt":                  {},
+	"accounts.google.com":            {},
+	"support.google.com":             {},
+	"webcache.googleusercontent.com": {},
+	"photos.google.com":              {},
+	"maps.google.com":                {},
+}
 
 // Initialize launches the singleton browser instance
 func Initialize() error {
@@ -46,47 +58,4 @@ func Get() *Instance {
 		}
 	}
 	return singleton
-}
-
-// Read performs a headless spoofed browser request and returns text + thumbnails
-func (i *Instance) Read(targetURL string) (string, []string, error) {
-
-	page := i.rod.MustPage("")
-	defer page.MustClose()
-
-	spoofBrowser(page, i.l)
-
-	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
-	defer cancel()
-
-	err := page.Context(ctx).Navigate(targetURL)
-	if err != nil {
-		i.l.Error("Navigation failed: " + err.Error())
-		return "", nil, err
-	}
-
-	page.MustWaitLoad()
-
-	body, err := page.Element("body")
-	if err != nil {
-		i.l.Warning("Could not read site: " + err.Error())
-		return "", nil, err
-	}
-
-	text, err := body.Text()
-	if err != nil {
-		i.l.Warning("Could not extract text: " + err.Error())
-		return "", nil, err
-	}
-
-	imgEls, _ := page.Elements("img")
-	var thumbs []string
-	for _, img := range imgEls {
-		src, _ := img.Attribute("src")
-		if src != nil && isLikelyThumbnail(*src) {
-			thumbs = append(thumbs, resolveURL(*src, targetURL))
-		}
-	}
-
-	return text, thumbs, nil
 }

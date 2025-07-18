@@ -1,50 +1,44 @@
 package browser
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
-
-	"github.com/go-rod/rod"
-	"github.com/go-rod/rod/lib/launcher"
-	"github.com/renniemaharaj/news-go/internal/log"
+	"time"
 )
 
-// Skip known domains that aren’t news sources
-var skipDomains = map[string]struct{}{
-	"www.google.com":                 {},
-	"policies.google.com":            {},
-	"www.google.tt":                  {},
-	"accounts.google.com":            {},
-	"support.google.com":             {},
-	"webcache.googleusercontent.com": {},
-	"photos.google.com":              {},
-	"maps.google.com":                {},
-}
-
 // Browser searching method, returns search results using Rod
-func Search(query string, numSitesPerQuery int, l *log.Logger) ([]string, error) {
+func (i *Instance) Search(query string, numSitesPerQuery int) ([]string, error) {
+	i.m.Lock()
+	defer i.m.Unlock()
+
+	if i.rod == nil {
+		Initialize()
+		return Get().Search(query, numSitesPerQuery)
+	}
+
+	i.l.Info("Searching for: " + query)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	i.rod.Context(ctx)
+	defer cancel()
+
 	searchURL := "https://www.google.com/search?q=" + url.QueryEscape(query) + "&num=10&tbm=nws&tbs=qdr:d"
 
-	path := launcher.New().Headless(true).MustLaunch()
-	browser := rod.New().ControlURL(path).MustConnect()
-	defer browser.MustClose()
+	page := i.rod.MustPage()
+	defer page.MustClose()
 
-	page := browser.MustPage(searchURL)
+	page.MustNavigate(searchURL)
 
-	// Set user agent via CDP protocol
-	spoofBrowser(page, l)
-
-	// Wait for search result blocks
+	spoofBrowser(page, i.l)
 	page.MustWaitLoad().MustWaitIdle()
-	page.MustElement("div#search") // Ensure results are loaded
+	page.MustElement("div#search")
 
-	// Extract top N results
 	links := page.MustElements("a")
 	var results []string
 
-	// Link vetting
 	for _, link := range links {
 		if len(results) >= numSitesPerQuery {
 			break
@@ -53,40 +47,36 @@ func Search(query string, numSitesPerQuery int, l *log.Logger) ([]string, error)
 		if err != nil || href == nil {
 			continue
 		}
-		raw := strings.TrimSpace(*href)
 
+		raw := strings.TrimSpace(*href)
 		var extracted string
 		if strings.HasPrefix(raw, "/url?q=") {
-			// Extract from Google redirect format
 			extracted = strings.SplitN(strings.TrimPrefix(raw, "/url?q="), "&", 2)[0]
 		} else if strings.HasPrefix(raw, "http://") || strings.HasPrefix(raw, "https://") {
-			// Use as-is
 			extracted = raw
 		} else {
-			continue // Skip things like "/search", "#", "javascript:void(0)", etc.
+			continue
 		}
 
 		parsed, err := url.Parse(extracted)
 		if err != nil || parsed.Scheme == "" || parsed.Host == "" {
-			l.Warning(fmt.Sprintf("Skipping invalid URL: %s", extracted))
+			i.l.Warning(fmt.Sprintf("Skipping invalid URL: %s", extracted))
 			continue
 		}
 
-		// Optional: Skip known domains (if defined elsewhere)
 		if _, skip := skipDomains[parsed.Hostname()]; skip {
 			continue
 		}
 
-		// Optional: HEAD request to validate it's a real article (can be slow)
 		respCheck, err := http.Head(extracted)
 		if err != nil || respCheck.StatusCode == http.StatusNotFound {
-			l.Warning(fmt.Sprintf("Skipping 404 or dead link: %s", extracted))
+			i.l.Warning(fmt.Sprintf("Skipping 404 or dead link: %s", extracted))
 			continue
 		}
 
-		l.Info(fmt.Sprintf("Found article: %s", extracted))
 		results = append(results, extracted)
 	}
 
+	i.l.Info(fmt.Sprintf("Found %d results for query: %s", len(results), query))
 	return results, nil
 }

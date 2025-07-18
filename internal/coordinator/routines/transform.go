@@ -14,10 +14,8 @@ func Transform(l *log.Logger, PARENT chan document.Report, CHILD chan document.R
 	for {
 		select {
 		case r := <-PARENT:
-			l.Info("#3 TRANSFORM: Transforming site content")
 			transform(&r, l)
 			CHILD <- r
-			l.Info("#3 TRANSFORM: Completed a job")
 		case <-time.After(10 * time.Second):
 			l.Debug("#3 TRANSFORM: waiting for jobs")
 		}

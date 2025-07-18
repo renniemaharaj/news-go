@@ -13,10 +13,8 @@ func Content(l *log.Logger, PARENT chan document.Report, CHILD chan document.Rep
 	for {
 		select {
 		case r := <-PARENT:
-			l.Info("#2 CONTENT: Getting site contents")
 			content(&r, l)
 			CHILD <- r
-			l.Info("#2 CONTENT: Completed a job")
 		case <-time.After(10 * time.Second):
 			l.Debug("#2 CONTENT: Waiting for jobs")
 		}
