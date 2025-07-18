@@ -1,6 +1,7 @@
 package http
 
 import (
+	"encoding/json"
 	"fmt"
 	"html"
 	"net/http"
@@ -8,6 +9,8 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/renniemaharaj/news-go/internal/config"
+	"github.com/renniemaharaj/news-go/internal/coordinator"
+	"github.com/renniemaharaj/news-go/internal/http/commands"
 	"github.com/renniemaharaj/news-go/internal/log"
 )
 
@@ -25,8 +28,12 @@ func upgradeHandler(w http.ResponseWriter, r *http.Request) {
 	l := log.CreateLogger("Socket", 100, true, false, false)
 	l.Info(fmt.Sprintf("%s client connected", html.EscapeString(r.URL.Path)))
 
-	connectedHandler(connection, l)
+	tagsAvailableBytes, err := json.Marshal(coordinator.Get().Store.TagsAvailable)
+	if err == nil {
+		connection.WriteMessage(websocket.TextMessage, commands.BuildDataBlock("tagsAvailable", tagsAvailableBytes))
+	}
 
+	connection.WriteMessage(websocket.TextMessage, tagsAvailableBytes)
 	handler := CreateMessageHandler(2 * time.Second) // min 2s between messages
 
 	for {

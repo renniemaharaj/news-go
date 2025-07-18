@@ -20,14 +20,6 @@ func SanitizeFilename(name string) string {
 	return name
 }
 
-func StringSliceToMap(list []string) map[string]struct{} {
-	set := make(map[string]struct{}, len(list))
-	for _, v := range list {
-		set[strings.ToLower(v)] = struct{}{}
-	}
-	return set
-}
-
 func StringSliceToEmptyStructMap(list []string) map[string]struct{} {
 	set := make(map[string]struct{}, len(list))
 	for _, v := range list {

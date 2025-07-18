@@ -5,7 +5,6 @@ import (
 	"net/url"
 
 	"github.com/gorilla/websocket"
-	"github.com/renniemaharaj/news-go/internal/config"
 	"github.com/renniemaharaj/news-go/internal/coordinator"
 	"github.com/renniemaharaj/news-go/internal/document"
 	"github.com/renniemaharaj/news-go/internal/log"
@@ -27,9 +26,6 @@ func searchHandler(c *Command, con *websocket.Conn, l *log.Logger) {
 			)
 
 			con.WriteMessage(websocket.TextMessage, buildDataBlockString("href", href))
-			adaptPrompt := "Please extend master list to include the attached search query"
-			config.Get().OptimizeQueries([]string{report.SearchQuery}, adaptPrompt)
-
 			return
 		}
 

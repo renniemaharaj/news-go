@@ -17,19 +17,15 @@ func CommandHandler(con *websocket.Conn, message []byte, l *log.Logger) {
 
 	l.Success(fmt.Sprintf("Command received: %s", c.Name))
 
-	var responses [][]byte
+	// var responses [][]byte
 
 	switch c.Name {
 	case "search":
 		searchHandler(&c, con, l)
 		return // async handled
-	case "optimizePreferences":
-		responses = OptimizeHandler(&c, l)
+	case "feed":
+		FeedHandler(&c, con, l)
 	default:
-		responses = [][]byte{buildErrorBlock("Unknown command")}
-	}
-
-	for _, msg := range responses {
-		con.WriteMessage(websocket.TextMessage, msg)
+		con.WriteMessage(websocket.TextMessage, []byte(buildErrorBlock("Unknown command")))
 	}
 }

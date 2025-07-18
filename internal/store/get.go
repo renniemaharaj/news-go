@@ -15,7 +15,7 @@ func (s *Instance) AllReports() []*document.Report {
 }
 
 func (s *Instance) ReportByTitle(title string) (*document.Report, bool) {
-	r, ok := s.reportsByTitle[strings.ToLower(title)]
+	r, ok := s.reportsByTitle[SanitizeFilename(title)]
 	return r, ok
 }
 

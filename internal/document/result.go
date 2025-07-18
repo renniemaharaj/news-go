@@ -5,6 +5,7 @@ import (
 
 	"github.com/renniemaharaj/news-go/internal/browser"
 	"github.com/renniemaharaj/news-go/internal/log"
+	"github.com/renniemaharaj/news-go/internal/utils"
 )
 
 // A wrapper for each search result and it's information
@@ -18,6 +19,17 @@ type Result struct {
 	HREF            string   `json:"href"`            // !System's assigned link
 	Tags            []string `json:"tags"`            // !Model's categories/topics, including framework themes
 	PoliticalBiases []string `json:"politicalBiases"` // !Model's examination and tagging for political biases eg: leftist, right, progressive, conservative
+}
+
+func (r *Result) HasTagIntersection(queryTags []string) bool {
+	tagSet := utils.StringSliceToMap(queryTags)
+
+	for _, tag := range r.Tags {
+		if _, ok := tagSet[tag]; ok {
+			return true
+		}
+	}
+	return false
 }
 
 // Function requests and returns http response to reduce required requests

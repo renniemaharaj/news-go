@@ -7,7 +7,6 @@ import (
 	"sync"
 
 	"github.com/renniemaharaj/news-go/internal/log"
-	"github.com/renniemaharaj/news-go/internal/model"
 )
 
 type Instance struct {
@@ -64,21 +63,4 @@ func (i *Instance) Write() error {
 
 	i.l.Success("Configuration file written")
 	return nil
-}
-
-// OptimizeQueries updates preferences using the model and returns optimized user prefs
-func (i *Instance) OptimizeQueries(userList []string, userPrompt string) ([]string, error) {
-	i.mu.Lock()
-	defer i.mu.Unlock()
-
-	i.l.Info("Optimizing client preferences and master list")
-	optimized, err := model.Optimize(i.SearchQueries, userList, userPrompt, i.l)
-	if err != nil {
-		return nil, fmt.Errorf("could not optimize queries: %s", err.Error())
-	}
-
-	// If you want to update the config's master list as well:
-	i.SearchQueries = optimized.OptimizedMasterList
-	go i.Write() // Write config
-	return optimized.OptimizedUserPreference, nil
 }

@@ -1,64 +1,55 @@
 {
   "port": ":7777",
   "debugging": false,
-  "num_sites_per_query": 5,
   "searchQueries": [
     "Emerging Trends in Artificial Intelligence",
     "AI Ethics and Societal Impact",
     "Technology's Role in Modern Communication",
     "Global Innovation in Science and Tech",
-
     "Top Global News Headlines",
     "Geopolitical Shifts and International Relations",
     "Economic Impacts of Technology Worldwide",
     "Cybersecurity and Digital Policy Worldwide",
     "Climate Tech and Environmental Policy News",
-
     "Christian Views on Modern Technology",
     "Biblical Teachings on Human Innovation",
     "Faith and Ethics in the Digital Age",
     "Christian Commentary on Current World Events",
     "Theology and Artificial Intelligence",
-
     "Current Events in the Middle East",
     "Middle East Conflict and Diplomacy",
     "Technology Developments in the Middle East",
     "Religious Influence on Middle Eastern Policies",
-
     "Biblical Prophecy and End Times News",
     "Spiritual Deception in the Digital Age",
     "False Narratives and Media Manipulation",
     "Disinformation and Christian Discernment",
     "Social Media's Role in Shaping Worldview",
-
     "Global Natural Disasters and Crisis Zones",
     "Volcanic Activity, Earthquakes and Tsunamis",
     "Climate Change Effects by Region",
     "Extreme Weather Events and Forecasts",
     "Environmental Disasters and Humanitarian Response",
-
     "Most Searched Global Topics Today",
     "Top Trending News Stories Right Now",
     "What the World Is Talking About",
     "Popular Internet and Social Media Trends",
     "Breaking Stories with High Engagement",
-
     "Healthy Living and Fitness Trends",
     "Breakthroughs in Modern Medicine",
     "Nutrition and Food Culture News",
     "Mental Health and Spiritual Wellness",
     "Healthcare Innovation and Public Policy",
-
     "Latest Trinidad and Tobago News",
     "Trinidad and Tobago Politics and Governance",
     "Economy and Energy News in Trinidad and Tobago",
     "Health and Community News in Trinidad and Tobago",
     "Cultural and Social Developments in Trinidad and Tobago",
-
     "Latest United States News",
     "US Politics and Government Affairs",
     "Social Issues and Cultural Trends in America",
     "American Economic and Tech Developments",
     "Faith, Freedom, and Religious News in the USA"
-  ]
+  ],
+  "num_sites_per_query": 5
 }

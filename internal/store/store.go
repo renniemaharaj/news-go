@@ -9,6 +9,7 @@ import (
 
 	"github.com/renniemaharaj/news-go/internal/document"
 	"github.com/renniemaharaj/news-go/internal/log"
+	"github.com/renniemaharaj/news-go/internal/utils"
 )
 
 const reportsDir = "./reports"
@@ -21,6 +22,7 @@ const reportTimeLayout = time.RFC3339
 
 type Instance struct {
 	reportsByTitle map[string]*document.Report
+	TagsAvailable  []string
 	l              *log.Logger
 }
 
@@ -29,6 +31,21 @@ func CreateStore(l *log.Logger) *Instance {
 		reportsByTitle: make(map[string]*document.Report),
 		l:              l,
 	}
+}
+
+func (s *Instance) HydrateTags() {
+	tagSet := make(map[string]struct{})
+
+	for _, r := range s.reportsByTitle {
+		for _, result := range r.Results {
+			// Add result tags
+			for _, tag := range result.Tags {
+				tagSet[strings.ToLower(tag)] = struct{}{}
+			}
+		}
+	}
+	s.TagsAvailable = utils.EmptyMapToStringSlice(tagSet)
+	s.l.Info(fmt.Sprintf("Hydrated %d unique tags (including political biases)", len(s.TagsAvailable)))
 }
 
 // Hydrate the store map of reports from the disk

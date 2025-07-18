@@ -1,8 +1,8 @@
 package model
 
 type Optimized struct {
-	OptimizedMasterList     []string `json:"optimizedMasterList"`     // Optimized master list
-	OptimizedUserPreference []string `json:"optimizedUserPreference"` // Optimized user preference
+	OptimizedMasterList []string `json:"optimizedMasterList"` // Optimized master list
+	PreferenceTags      []string `json:"preferenceTags"`      // Optimized user preference
 }
 
 type Transformed struct {

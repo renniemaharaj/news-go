@@ -32,6 +32,8 @@ func (i *Instance) updateRoutine(storeInstance *store.Instance) {
 	// 2) Get all configured search queries
 	searchQueries := config.Get().SearchQueries
 
+	i.Store.HydrateTags()
+
 	// 3) For each configured search query, send only if not up-to-date
 	for _, query := range searchQueries {
 		if _, exists := upToDateMap[store.SanitizeFilename(query)]; !exists {

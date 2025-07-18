@@ -5,6 +5,7 @@ import (
 
 	"github.com/renniemaharaj/news-go/internal/browser"
 	"github.com/renniemaharaj/news-go/internal/log"
+	"github.com/renniemaharaj/news-go/internal/utils"
 )
 
 // A single report structure
@@ -13,6 +14,21 @@ type Report struct {
 	Results     []Result `json:"results"`     // !System's search results list
 	Title       string   `json:"title"`       // !Model's clear and concise report title
 	Date        string   `json:"date"`        // !System's ISO 8601 format (e.g., 2025-05-03)
+}
+
+func (r *Report) HasTagIntersection(userTags []string) bool {
+	// Convert user tags to set
+	userTagSet := utils.StringSliceToMap(userTags)
+
+	// Walk report results and check tags
+	for _, result := range r.Results {
+		for _, tag := range result.Tags {
+			if _, ok := userTagSet[tag]; ok {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 func (r *Report) CollectResults(l *log.Logger, sitesPerQuery int) error {
