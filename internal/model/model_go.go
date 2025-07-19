@@ -15,8 +15,7 @@ func (i *Instance) Prompt(msg string) (string, error) {
 	defer i.mu.Unlock()
 	// Define payload structure
 	payload := map[string]interface{}{
-		"model": "smollm3-3b", // or dynamic if needed
-		// "model":       "llama-3.2-3b-instruct",
+
 		"messages":    []map[string]string{{"role": "user", "content": msg}},
 		"temperature": 0.7,
 		"max_tokens":  -1,

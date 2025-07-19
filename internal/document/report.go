@@ -16,6 +16,24 @@ type Report struct {
 	Date        string   `json:"date"`        // !System's ISO 8601 format (e.g., 2025-05-03)
 }
 
+// Reports forEach method
+func (r *Report) ForEach(callback func(int, *Result)) {
+	for k, r := range r.Results {
+		callback(k, &r)
+	}
+}
+
+// Reports filter method, returns filtered slice
+func (r *Report) Filter(predicate func(int, *Result) bool) []*Result {
+	var filtered []*Result
+	for k, r := range r.Results {
+		if predicate(k, &r) {
+			filtered = append(filtered, &r)
+		}
+	}
+	return filtered
+}
+
 func (r *Report) HasTagIntersection(userTags []string) bool {
 	// Convert user tags to set
 	userTagSet := utils.StringSliceToMap(userTags)

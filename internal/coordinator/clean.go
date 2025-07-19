@@ -16,13 +16,6 @@ func (i *Instance) auditStoreRoutineScheduler(storeInstance *store.Instance) {
 			i.auditStoreRoutine(storeInstance)
 		}
 	}()
-
-	auditDiskTicker := time.NewTicker(store.AuditDiskInterval)
-	go func() {
-		for range auditDiskTicker.C {
-			i.auditStoreRoutine(storeInstance)
-		}
-	}()
 	i.l.Info("Scheduled periodic audit routine")
 }
 

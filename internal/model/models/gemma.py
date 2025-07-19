@@ -7,24 +7,30 @@ import io
 import sys
 from google import genai
 from google.genai import types
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
 # Load environment variables from .env file
-load_dotenv()
+# load_dotenv()
 
 # Force UTF-8 output for Windows terminals
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 # Read input from command-line arguments
 if len(sys.argv) < 2:
-    print("Error: Missing input text argument", file=sys.stderr)
+    print("Error: Missing API Key", file=sys.stderr)
     sys.exit(1)
+API_KEY = sys.argv[1].strip()
 
-input_text = sys.argv[1].strip()
+# Read input from command-line arguments
+if len(sys.argv) < 3:
+    print("Error: Missing prompt", file=sys.stderr)
+    sys.exit(1)
+PROMPT = sys.argv[2].strip()
+
 print(os.getenv("GEMINI_API_KEY"))
 def generate(prompt):
     client = genai.Client(
-        api_key=os.getenv("GEMINI_API_KEY"),
+        api_key=API_KEY,
     )
 
     model = "gemma-3-4b-it"
@@ -32,7 +38,7 @@ def generate(prompt):
         types.Content(
             role="user",
             parts=[
-                types.Part.from_text(text=prompt),
+                types.Part.from_text(text=PROMPT),
             ],
         ),
     ]
@@ -48,4 +54,4 @@ def generate(prompt):
         print(chunk.text, end="")
 
 if __name__ == "__main__":
-    generate(input_text)
+    generate(PROMPT)

@@ -11,5 +11,6 @@ type Transformed struct {
 	Tags                []string `json:"tags"`                // !Model's categories/topics, including framework themes
 	PoliticalBiases     []string `json:"politicalBiases"`     // !Model's examination and tagging for political biases eg: leftist, right, progressive, conservative
 	Summary             string   `json:"summary"`             // !Model's thoughtful summary with framework reflection
+	Images              []string `json:"images"`              // !Model's chosen images based on content
 	InSufficientContent bool     `json:"InSufficientContent"` //!Model's flagging
 }

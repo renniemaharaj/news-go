@@ -16,12 +16,12 @@ func Transform(result *document.Result, l *log.Logger) (document.Result, error) 
 		return *result, fmt.Errorf("result had no text content")
 	}
 
-	transformPrompt, err := instructions.BuildTransformPrompt(result.TextContent)
+	transformPrompt, err := instructions.BuildTransformPrompt(result.TextContent, result.Images)
 	if err != nil {
 		return *result, fmt.Errorf("result had no text content: %s", err.Error())
 	}
 
-	transformResponse, err := Get().Prompt(transformPrompt)
+	transformResponse, err := Get().Prompt_Py(transformPrompt)
 
 	if err != nil {
 		return *result, fmt.Errorf("transformation failed: %s", err.Error())
@@ -43,6 +43,7 @@ func Transform(result *document.Result, l *log.Logger) (document.Result, error) 
 	result.Tags = transformed.Tags
 	result.PoliticalBiases = transformed.PoliticalBiases
 	result.Summary = transformed.Summary
+	result.Images = transformed.Images
 
 	//Cleanup result raw text
 	result.TextContent = ""

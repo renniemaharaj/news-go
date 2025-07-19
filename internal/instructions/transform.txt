@@ -5,6 +5,7 @@
   "summary": string,
   "tags": string[],
   "alignment": number,
+  "images": string[],
   "politicalBiases": string[],
   "inSufficientContent": boolean
 }
@@ -26,6 +27,17 @@
   - Include at least one directly related to the Axioms of Life (e.g., "truth", "faith", "scripture", "deception").
   - Optionally include topics like “technology”, “politics”, “health”, “war”, etc.
   - Avoid redundant or vague tags.
+
+- images:
+  - Only include images that are relevant and descriptive
+    - Do NOT include:
+      - Placeholder images (e.g. containing 'placeholder', 'default', 'dummy', 'blank', or 'unknown' in the name or URL)
+      - Icons or UI elements (e.g. filenames with 'icon', 'ui', 'button', 'logo')
+      - Images with unclear or generic names
+      - Prefer images with filenames or URLs that clearly indicate real subjects (e.g. 'dog-playing-park.jpg', 'fashion-runway-2024.webp')
+      - Prefer image file types: .jpg, .jpeg, .png, or .webp
+      - Avoid duplicates or very similar images
+      - Keep only high-confidence images that visually support the listed points
 
 - alignment (0–10):
   - 10 = Profound, direct alignment with all three axioms.

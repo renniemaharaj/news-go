@@ -1,8 +1,11 @@
 package instructions
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
-func BuildTransformPrompt(textContent string) (string, error) {
+func BuildTransformPrompt(textContent string, images []string) (string, error) {
 	base, err := load("base.txt")
 	if err != nil {
 		return "", err
@@ -15,9 +18,14 @@ func BuildTransformPrompt(textContent string) (string, error) {
 
 	combinedPrompt := fmt.Sprintf(`
 	Based on the following article, populate and return a report object:
+		- Also select images from the list that best represent the article.
 	
 	Following article:
-	%s`, textContent)
+	%s
+	
+	Images to choose from:
+	%s
+	`, textContent, strings.Join(images, ", "))
 
 	final := inject(base, map[string]string{
 		"ruleGoesHere":   transformRules,

@@ -16,7 +16,6 @@ const reportsDir = "./reports"
 
 var UpdateInterval = 24 * time.Hour
 var AuditStoreInterval = time.Hour
-var AuditDiskInterval = 24 * 30 * time.Hour
 
 const reportTimeLayout = time.RFC3339
 

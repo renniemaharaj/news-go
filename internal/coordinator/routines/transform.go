@@ -16,6 +16,7 @@ func Transform(l *log.Logger, PARENT chan document.Report, CHILD chan document.R
 		case r := <-PARENT:
 			transform(&r, l)
 			CHILD <- r
+			time.Sleep(3 * time.Second)
 		case <-time.After(10 * time.Second):
 			l.Debug("#3 TRANSFORM: waiting for jobs")
 		}

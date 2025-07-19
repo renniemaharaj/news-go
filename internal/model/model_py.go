@@ -15,15 +15,19 @@ type Instance struct {
 	l  *log.Logger
 }
 
-var modelFile = "local.py"
+var modelFile = "gemma.py"
 
 func (i *Instance) Prompt_Py(msg string) (string, error) {
 	i.mu.Lock()
-	i.l.Debug("Entering transformation request stage")
-	defer i.mu.Unlock()
+	i.l.Info("Analyzing content")
+	key := <-apiKeys
+	defer func() {
+		apiKeys <- key
+		i.mu.Unlock()
+	}()
 
 	// Call Python script
-	cmd := exec.Command("py", fmt.Sprintf("internal/model/models/%s", modelFile), msg) // or full path
+	cmd := exec.Command("py", fmt.Sprintf("internal/model/models/%s", modelFile), key, msg) // or full path
 	// cmd.Stdin = bytes.NewReader([]byte(msg))
 
 	var out bytes.Buffer
@@ -37,9 +41,10 @@ func (i *Instance) Prompt_Py(msg string) (string, error) {
 
 	outString := out.String()
 
-	linted := LintCodeFences(&outString, "json")
+	linted, ok := ExtractCodeBlock(outString)
+	if !ok {
+		return "", fmt.Errorf("AI transform failed: no code block found in output")
+	}
 
-	i.l.Debug(*linted)
-
-	return *linted, nil
+	return linted, nil
 }

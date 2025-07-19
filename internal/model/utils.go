@@ -2,6 +2,9 @@ package model
 
 import (
 	"fmt"
+	"log"
+	"os"
+	"regexp"
 	"strings"
 )
 
@@ -11,6 +14,25 @@ func parseCommaList(s string) []string {
 		parts[i] = strings.TrimSpace(parts[i])
 	}
 	return parts
+}
+
+func ExtractCodeBlock(input string) (string, bool) {
+	pattern := os.Getenv("CODE_FENCE_INNER_REGEX")
+	if pattern == "" {
+		log.Fatal("CODE_FENCE_INNER_REGEX not set in environment")
+	}
+
+	re, err := regexp.Compile(pattern)
+	if err != nil {
+		log.Fatalf("Invalid regex pattern: %v", err)
+	}
+	matches := re.FindStringSubmatch(input)
+
+	if len(matches) < 2 {
+		return "", false
+	}
+
+	return matches[1], true
 }
 
 // LintCodeFences removes ```<lang> and ``` fences from an input string.
