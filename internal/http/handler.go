@@ -14,7 +14,7 @@ import (
 	"github.com/renniemaharaj/news-go/internal/log"
 )
 
-// The upgrader to be used later for upgrading with cors configuration
+// The upgrader to be used later for upgrading with cors configuration or not :(
 var wsUpgrade = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool {
 		return true // Accepting all origin

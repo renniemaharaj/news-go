@@ -47,6 +47,7 @@ func (i *Instance) updateRoutine(storeInstance *store.Instance) {
 		for report := range i.c {
 			i.l.Info(fmt.Sprintf("Report completed: %s", report.SearchQuery))
 			storeInstance.StoreReport(&report, i.l)
+			i.Store.HydrateTags()
 		}
 	}()
 }
