@@ -21,7 +21,7 @@ func Transform(result *document.Result, l *log.Logger) (document.Result, error) 
 		return *result, fmt.Errorf("result had no text content: %s", err.Error())
 	}
 
-	transformResponse, err := Get().Prompt_Py(transformPrompt)
+	transformResponse, err := Get().Prompt(transformPrompt)
 
 	if err != nil {
 		return *result, fmt.Errorf("transformation failed: %s", err.Error())

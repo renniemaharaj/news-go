@@ -16,6 +16,9 @@ func parseCommaList(s string) []string {
 	return parts
 }
 
+// The regex pattern to extract the inner content of a code block.
+// Place somewhere in your .env file or otherwise
+// (?s)\s*```(?:json)?\s*(\{.*?\})\s*```
 func ExtractCodeBlock(input string) (string, bool) {
 	pattern := os.Getenv("CODE_FENCE_INNER_REGEX")
 	if pattern == "" {
