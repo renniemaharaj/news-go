@@ -10,6 +10,7 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/renniemaharaj/news-go/internal/config"
 	"github.com/renniemaharaj/news-go/internal/coordinator"
+	"github.com/renniemaharaj/news-go/internal/health"
 	"github.com/renniemaharaj/news-go/internal/http/commands"
 	"github.com/renniemaharaj/news-go/internal/log"
 )
@@ -51,7 +52,8 @@ var distDir = "./dist"
 
 // Primary open function for starting server
 func ServeFrontend(l *log.Logger) {
-	http.HandleFunc("/ws", upgradeHandler) // WebSocket route
+	http.HandleFunc("/ws", upgradeHandler)                         // WebSocket route
+	http.HandleFunc("/healthcheck", health.HealthHandler("1.0.0")) // Health check route
 
 	// Serve static assets in /dist (e.g., /assets/*.js, .css, etc.)
 	fileServer := http.FileServer(http.Dir(distDir))

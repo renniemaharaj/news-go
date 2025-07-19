@@ -16,10 +16,10 @@ func HealthHandler(version string) http.HandlerFunc {
 	}
 }
 
-func startHealthPulse(apiURL string, l *log.Logger) {
+func HealthCheckScheduler(apiURL string, l *log.Logger) {
 
 	go func() {
-		ticker := time.NewTicker(time.Minute / 2)
+		ticker := time.NewTicker(30 * time.Second) // Health check every 30 seconds
 		defer ticker.Stop()
 
 		client := &http.Client{}
