@@ -55,11 +55,13 @@ Objectives:
 <END OBJECTIVE>
 
 <BEGIN RESPONSE RULES>
+- Do not think
 - Respond with only what the prompt requests — no extra comments, formatting, or explanation.
 - Responses must be short, structured, and precise.
 - Follow this strict schema:
-- Do not think
+
 ruleGoesHere
+
 <END RESPONSE RULES>
 <END INITIAL INSTRUCTIONS>
 
