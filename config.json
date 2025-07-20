@@ -1,5 +1,5 @@
 {
-  "port": ":7777",
+  "port": ":80",
   "debugging": false,
   "searchQueries": [
     "Emerging Trends in Artificial Intelligence",
@@ -51,5 +51,5 @@
     "American Economic and Tech Developments",
     "Faith, Freedom, and Religious News in the USA"
   ],
-  "num_sites_per_query": 2
+  "num_sites_per_query": 5
 }

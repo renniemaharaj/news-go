@@ -2,8 +2,10 @@ package coordinator
 
 import (
 	"fmt"
+	"os"
 	"time"
 
+	"github.com/joho/godotenv"
 	"github.com/renniemaharaj/news-go/internal/config"
 	"github.com/renniemaharaj/news-go/internal/document"
 	"github.com/renniemaharaj/news-go/internal/store"
@@ -33,6 +35,16 @@ func (i *Instance) updateRoutine(storeInstance *store.Instance) {
 	searchQueries := config.Get().SearchQueries
 
 	i.Store.HydrateTags()
+
+	if err := godotenv.Load(); err != nil {
+		singleton.l.Error("No .env file found, or error loading it: " + err.Error())
+		return
+	}
+
+	if os.Getenv("ENABLE_BROWSER") == "" {
+		singleton.l.Warning("Browser functionality is disabled. Set ENABLE_BROWSER to enable")
+		return
+	}
 
 	// 3) For each configured search query, send only if not up-to-date
 	for _, query := range searchQueries {
