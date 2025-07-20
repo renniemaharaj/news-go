@@ -20,6 +20,6 @@ func main() {
 	// router.LoginToRouter()
 
 	go server.Serve()
-	health.HealthCheckScheduler(os.Getenv("WHO_AM_I_API_URL"), createLogger())
+	health.HealthCheckScheduler(os.Getenv("WHO_AM_I"), createLogger())
 	select {}
 }
