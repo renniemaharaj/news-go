@@ -4,11 +4,19 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"path/filepath"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/fatih/color"
 )
+
+type Line struct {
+	Prefix string `json:"prefix"`
+	Time   string `json:"time"`
+	Level  string `json:"level"`
+	Msg    string `json:"msg"`
+}
 
 type Logger struct {
 	mu          sync.Mutex
@@ -22,112 +30,55 @@ type Logger struct {
 	Debugging   bool
 }
 
-var prefixes = map[string]string{
-	"debug":   "🐞",
-	"info":    "ℹ️",
-	"warning": "⚠️",
-	"error":   "❌",
-	"success": "✅",
-}
-
-var twclogsDir = "twclogs"
-
-func CreateLogger(prefix string, maxLines int, toStdout bool, jsonMode bool, debugging bool) *Logger {
-	if err := os.MkdirAll(twclogsDir, 0755); err != nil {
-		panic("Failed to create log directory: " + err.Error())
-	}
-
-	l := &Logger{
-		Prefix:    prefix,
-		MaxLines:  maxLines,
-		ToStdout:  toStdout,
-		JSONMode:  jsonMode,
-		Debugging: debugging,
-	}
-	l.rotate()
-
-	return l
-}
-
-func (l *Logger) GetLogFileName() string {
-	return l.file.Name()
-}
-
-func (l *Logger) rotate() {
-	if l.file != nil {
-		l.file.Close()
-	}
-
-	filename := filepath.Join(twclogsDir, "log-"+time.Now().Format("2006-01-02-15-04-05")+".log")
-
-	f, err := os.Create(filename)
-	if err != nil {
-		panic("Failed to create log file: " + err.Error())
-	}
-
-	l.file = f
-	l.writer = f
-	l.currentLine = 0
-}
+var twclogsDir = "./twclogs"
 
 func (l *Logger) log(level string, msg string) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 
 	timestamp := time.Now().Format("2006-01-02 15:04:05.000")
-	prefix := prefixes[level]
 
-	line := fmt.Sprintf("%s: %s [%s %s] %s", timestamp, strings.ToUpper(level), prefix, l.Prefix, msg)
+	line := &Line{
+		Time:   timestamp,
+		Level:  strings.ToUpper(level),
+		Prefix: l.Prefix,
+		Msg:    msg,
+	}
+
+	lineString := fmt.Sprintf("%s: %s [%s] %s", timestamp, line.Level, l.Prefix, msg)
 
 	if l.JSONMode {
-		logObj := map[string]interface{}{
-			"Prefix": l.Prefix,
-			"time":   timestamp,
-			"level":  level,
-			"msg":    msg,
-		}
-		jsonBytes, _ := json.Marshal(logObj)
-		line = string(jsonBytes)
+		jsonBytes, _ := json.Marshal(line)
+		lineString = string(jsonBytes)
 	}
 
-	// Write to log file
-	fmt.Fprintln(l.writer, line)
-	l.currentLine++
-
-	// Also print to stdout
+	// Write to log file and stdout if enabled
+	fmt.Fprintln(l.writer, lineString)
 	if l.ToStdout {
-		fmt.Println(line)
+		switch line.Level {
+		case "INFO":
+			fmt.Println(lineString)
+		case "DEBUG":
+			if l.Debugging {
+				fmt.Println(lineString)
+			}
+		case "SUCCESS":
+			color.Green(lineString)
+		case "WARNING":
+			color.Yellow(lineString)
+		case "ERROR":
+			color.Red(lineString)
+		case "FATAL":
+			color.Red(lineString)
+			os.Exit(1)
+		default:
+			fmt.Println(lineString)
+		}
 	}
+	l.currentLine++
 
 	// Rotate if line limit is reached
 	if l.currentLine >= l.MaxLines {
 		l.rotate()
 	}
-}
-
-func (l *Logger) Info(msg string) {
-	l.log("info", msg)
-}
-
-func (l *Logger) Debug(msg string) {
-	if l.Debugging {
-		l.log("debug", msg)
-	}
-
-}
-
-func (l *Logger) Success(msg string) {
-	l.log("success", msg)
-}
-
-func (l *Logger) Warning(msg string) {
-	l.log("warning", msg)
-}
-
-func (l *Logger) Error(msg string) {
-	l.log("error", msg)
-}
-
-func (l *Logger) Fatal(e error) {
-	l.log("error", e.Error())
 }
