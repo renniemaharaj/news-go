@@ -26,7 +26,7 @@ func HealthCheckScheduler(apiURL string, l *log.Logger) {
 
 		for range ticker.C {
 			if apiURL == "" {
-				l.Error("API Address not set for health check")
+				l.Warning("API Address not set for health check")
 				continue
 			}
 

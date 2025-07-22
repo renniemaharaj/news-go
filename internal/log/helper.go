@@ -7,7 +7,7 @@ import (
 )
 
 func CreateLogger(prefix string, maxLines int, toStdout bool, jsonMode bool, debugging bool) *Logger {
-	if err := os.MkdirAll(twclogsDir, 0755); err != nil {
+	if err := os.MkdirAll(twcLogsDir, 0755); err != nil {
 		panic("Failed to create log directory: " + err.Error())
 	}
 
@@ -17,6 +17,8 @@ func CreateLogger(prefix string, maxLines int, toStdout bool, jsonMode bool, deb
 		ToStdout:  toStdout,
 		JSONMode:  jsonMode,
 		Debugging: debugging,
+
+		Subscribers: &Subscribers{},
 	}
 	l.rotate()
 
@@ -24,18 +26,17 @@ func CreateLogger(prefix string, maxLines int, toStdout bool, jsonMode bool, deb
 }
 
 func (l *Logger) rotate() {
-	if l.file != nil {
-		l.file.Close()
+	if l.writer != nil {
+		l.writer.Close()
 	}
 
-	filename := filepath.Join(twclogsDir, "log-"+time.Now().Format("2006-01-02-15-04-05")+".log")
+	filename := filepath.Join(twcLogsDir, "log-"+time.Now().Format("2006-01-02-15-04-05")+".log")
 
 	f, err := os.Create(filename)
 	if err != nil {
 		panic("Failed to create log file: " + err.Error())
 	}
 
-	l.file = f
 	l.writer = f
 	l.currentLine = 0
 }

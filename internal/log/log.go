@@ -20,7 +20,6 @@ type Line struct {
 
 type Logger struct {
 	mu          sync.Mutex
-	file        *os.File
 	writer      *os.File
 	currentLine int
 	MaxLines    int
@@ -28,9 +27,27 @@ type Logger struct {
 	JSONMode    bool
 	Prefix      string
 	Debugging   bool
+
+	Subscribers *Subscribers
 }
 
-var twclogsDir = "./twclogs"
+var GlobalLogger *Logger
+
+var twcLogsDir = "./twcLogs"
+
+func InitGlobalLogger() {
+	GlobalLogger = &Logger{
+		Prefix:    "GLOBAL",
+		MaxLines:  100,
+		ToStdout:  true,
+		JSONMode:  false,
+		Debugging: false,
+
+		Subscribers: &Subscribers{},
+	}
+
+	GlobalLogger.rotate()
+}
 
 func (l *Logger) log(level string, msg string) {
 	l.mu.Lock()
@@ -52,16 +69,26 @@ func (l *Logger) log(level string, msg string) {
 		lineString = string(jsonBytes)
 	}
 
+	debugFunc := func() {
+		if l.Debugging {
+			fmt.Println(lineString)
+		}
+	}
+
+	// Broadcast to all local subscribers
+	l.Subscribers.Broadcast(*line)
+
+	// If GlobalLogger, broadcast to all global logger's subscribers
+	if GlobalLogger != nil {
+		GlobalLogger.Subscribers.Broadcast(*line)
+	}
+
 	// Write to log file and stdout if enabled
 	fmt.Fprintln(l.writer, lineString)
 	if l.ToStdout {
 		switch line.Level {
 		case "INFO":
 			fmt.Println(lineString)
-		case "DEBUG":
-			if l.Debugging {
-				fmt.Println(lineString)
-			}
 		case "SUCCESS":
 			color.Green(lineString)
 		case "WARNING":
@@ -71,6 +98,8 @@ func (l *Logger) log(level string, msg string) {
 		case "FATAL":
 			color.Red(lineString)
 			os.Exit(1)
+		case "DEBUG":
+			debugFunc()
 		default:
 			fmt.Println(lineString)
 		}

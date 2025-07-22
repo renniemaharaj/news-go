@@ -16,6 +16,8 @@ func createLogger() *log.Logger {
 
 func main() {
 	coordinator.Initialize()
+	log.InitGlobalLogger()
+
 	// cloudflare.Initialize()
 	// router.LoginToRouter()
 

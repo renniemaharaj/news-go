@@ -25,6 +25,8 @@ func CommandHandler(con *websocket.Conn, message []byte, l *log.Logger) {
 		return // async handled
 	case "feed":
 		FeedHandler(&c, con, l)
+	case "log":
+		logHandler(con, l)
 	default:
 		con.WriteMessage(websocket.TextMessage, []byte(buildErrorBlock("Unknown command")))
 	}
