@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/renniemaharaj/news-go/internal/document"
+	"github.com/renniemaharaj/news-go/internal/loggers"
 )
 
 // Efficient shaking method that shakes only the store instance
@@ -14,7 +15,7 @@ func (s *Instance) ShakeStore(expected map[string]struct{}) {
 	s.ForEach(func(key string, r *document.Report) {
 		if _, ok := expected[key]; !ok {
 			delete(s.reportsByTitle, key)
-			s.l.Info(fmt.Sprintf("Shook report from memory: %s", key))
+			loggers.LOGGER_STORE.Info(fmt.Sprintf("Shook report from memory: %s", key))
 		}
 	})
 }
@@ -23,7 +24,7 @@ func (s *Instance) ShakeStore(expected map[string]struct{}) {
 func (s *Instance) ShakeDisk(expected map[string]struct{}) error {
 	err := filepath.WalkDir(reportsDir, func(path string, d os.DirEntry, err error) error {
 		if err != nil {
-			s.l.Error(fmt.Sprintf("Error accessing path %s: %s", path, err.Error()))
+			loggers.LOGGER_STORE.Error(fmt.Sprintf("Error accessing path %s: %s", path, err.Error()))
 			return nil // Continue walking
 		}
 
@@ -31,9 +32,9 @@ func (s *Instance) ShakeDisk(expected map[string]struct{}) error {
 			name := strings.TrimSuffix(d.Name(), ".json")
 			if _, ok := expected[name]; !ok {
 				if err := os.Remove(path); err != nil {
-					s.l.Error(fmt.Sprintf("Failed to remove file: %s", path))
+					loggers.LOGGER_STORE.Error(fmt.Sprintf("Failed to remove file: %s", path))
 				} else {
-					s.l.Info(fmt.Sprintf("Shook report from disk: %s", path))
+					loggers.LOGGER_STORE.Info(fmt.Sprintf("Shook report from disk: %s", path))
 				}
 			}
 		}

@@ -2,13 +2,12 @@ package coordinator
 
 import (
 	"github.com/renniemaharaj/news-go/internal/document"
-	"github.com/renniemaharaj/news-go/internal/log"
+	"github.com/renniemaharaj/news-go/internal/loggers"
 	"github.com/renniemaharaj/news-go/internal/reporter"
 	"github.com/renniemaharaj/news-go/internal/store"
 )
 
 type Instance struct {
-	l *log.Logger
 	r *reporter.Instance
 	c chan document.Report
 
@@ -20,11 +19,10 @@ var singleton *Instance
 
 func Initialize() {
 	singleton = &Instance{}
-	singleton.l = createLogger() // 1) Create the logger for communication
-	singleton.l.Info("Initializing")
+	l := loggers.LOGGER_COORDINATOR.Info("Initializing")
 
 	// 2) Initialize and hydrate store from disk
-	singleton.Store = *store.CreateStore(singleton.l)
+	singleton.Store = *store.CreateStore(l)
 	singleton.Store.Hydrate()
 
 	// 3) Shake the store in memory and schedule routine audits w/ audit disk
@@ -32,7 +30,7 @@ func Initialize() {
 	singleton.auditStoreRoutineScheduler(&singleton.Store)
 
 	// Create the report and initialize the coordinator's reporter and receive channel
-	singleton.r, singleton.c = reporter.CreateReporter(singleton.l)
+	singleton.r, singleton.c = reporter.CreateReporter(l)
 
 	// 4) Run update once at startup and schedule update routine
 	go singleton.updateRoutine(&singleton.Store)

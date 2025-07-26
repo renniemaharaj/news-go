@@ -6,11 +6,13 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+
+	"github.com/renniemaharaj/news-go/internal/loggers"
 )
 
 func (i *Instance) Prompt(msg string) (string, error) {
 	i.mu.Lock()
-	i.l.Info("Analyzing content")
+	loggers.LOGGER_TRANSFORMER.Info("Analyzing content")
 	key := <-apiKeys
 	defer func() {
 		apiKeys <- key
@@ -78,7 +80,7 @@ func (i *Instance) Prompt(msg string) (string, error) {
 	outString := result.Candidates[0].Content.Parts[0].Text
 	linted, ok := ExtractCodeBlock(outString)
 	if !ok {
-		i.l.Error(outString)
+		loggers.LOGGER_TRANSFORMER.Error(outString)
 		return "", fmt.Errorf("AI transform failed: no code block found in output")
 	}
 

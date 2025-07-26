@@ -5,12 +5,12 @@ import (
 	"fmt"
 
 	"github.com/gorilla/websocket"
+	"github.com/renniemaharaj/grouplogs/pkg/logger"
 	"github.com/renniemaharaj/news-go/internal/coordinator"
 	"github.com/renniemaharaj/news-go/internal/document"
-	"github.com/renniemaharaj/news-go/internal/log"
 )
 
-func FeedHandler(c *Command, con *websocket.Conn, l *log.Logger) {
+func FeedHandler(c *Command, con *websocket.Conn, l *logger.Logger) {
 	feed := &Feed{}
 	if err := json.Unmarshal([]byte(c.Body), feed); err != nil {
 		l.Error("Malformed feed command body")

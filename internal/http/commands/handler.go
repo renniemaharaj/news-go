@@ -5,10 +5,10 @@ import (
 	"fmt"
 
 	"github.com/gorilla/websocket"
-	"github.com/renniemaharaj/news-go/internal/log"
+	"github.com/renniemaharaj/grouplogs/pkg/logger"
 )
 
-func CommandHandler(con *websocket.Conn, message []byte, l *log.Logger) {
+func CommandHandler(con *websocket.Conn, message []byte, l *logger.Logger) {
 	var c Command
 	if err := json.Unmarshal(message, &c); err != nil {
 		l.Error("Invalid command payload from client")

@@ -1,9 +1,9 @@
 package reporter
 
 import (
+	"github.com/renniemaharaj/grouplogs/pkg/logger"
 	"github.com/renniemaharaj/news-go/internal/coordinator/routines"
 	"github.com/renniemaharaj/news-go/internal/document"
-	"github.com/renniemaharaj/news-go/internal/log"
 )
 
 // A reporter instance
@@ -30,7 +30,7 @@ func (i *Instance) InitializeChannels(b1 int16, b2 int16, b3 int16, b4 int16) {
 }
 
 // Essentially, initializes pipeline routines, expects a channel to pass finished jobs
-func (i *Instance) ReadyRoutines(l *log.Logger, CHILD chan document.Report) {
+func (i *Instance) ReadyRoutines(l *logger.Logger, CHILD chan document.Report) {
 
 	go routines.Search(l, i.TODO_SEARCH_CHANNEL, i.TODO_SCRAPE_CHANNEL)
 	go routines.Content(l, i.TODO_SCRAPE_CHANNEL, i.TODO_TRANSFORM_CHANNEL)

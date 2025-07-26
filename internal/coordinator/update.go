@@ -8,6 +8,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/renniemaharaj/news-go/internal/config"
 	"github.com/renniemaharaj/news-go/internal/document"
+	"github.com/renniemaharaj/news-go/internal/loggers"
 	"github.com/renniemaharaj/news-go/internal/store"
 )
 
@@ -20,15 +21,15 @@ func (i *Instance) updateStoreRoutineScheduler(storeInstance *store.Instance) {
 			i.updateRoutine(storeInstance)
 		}
 	}()
-	i.l.Info("Scheduled periodic update routine")
+	loggers.LOGGER_COORDINATOR.Info("Scheduled periodic update routine")
 }
 
 // Coordinator's, store update routine
 func (i *Instance) updateRoutine(storeInstance *store.Instance) {
-	i.l.Info("Running update routine")
+	loggers.LOGGER_COORDINATOR.Info("Running update routine")
 
 	// 1) Get current report titles
-	upToDateTitles := storeInstance.GetUpdatedReports(i.l)
+	upToDateTitles := storeInstance.GetUpdatedReports(loggers.LOGGER_COORDINATOR)
 	upToDateMap := store.StringSliceToEmptyStructMap(upToDateTitles)
 
 	// 2) Get all configured search queries
@@ -37,12 +38,12 @@ func (i *Instance) updateRoutine(storeInstance *store.Instance) {
 	i.Store.HydrateTags()
 
 	if err := godotenv.Load(); err != nil {
-		singleton.l.Error("No .env file found, or error loading it: " + err.Error())
+		loggers.LOGGER_COORDINATOR.Error("No .env file found, or error loading it: " + err.Error())
 		return
 	}
 
 	if os.Getenv("ENABLE_BROWSER") == "" {
-		singleton.l.Warning("Browser functionality is disabled. Set ENABLE_BROWSER to enable")
+		loggers.LOGGER_COORDINATOR.Warning("Browser functionality is disabled. Set ENABLE_BROWSER to enable")
 		return
 	}
 
@@ -50,15 +51,15 @@ func (i *Instance) updateRoutine(storeInstance *store.Instance) {
 	for _, query := range searchQueries {
 		if _, exists := upToDateMap[store.SanitizeFilename(query)]; !exists {
 			i.r.TODO_SEARCH_CHANNEL <- document.ReportFromQuery(query)
-			i.l.Info(fmt.Sprintf("Will updated: %s", query))
+			loggers.LOGGER_COORDINATOR.Info(fmt.Sprintf("Will updated: %s", query))
 		}
 	}
 
 	// 4) Read from reporter channel and persist
 	go func() {
 		for report := range i.c {
-			i.l.Info(fmt.Sprintf("Report completed: %s", report.SearchQuery))
-			storeInstance.StoreReport(&report, i.l)
+			loggers.LOGGER_COORDINATOR.Success(fmt.Sprintf("Report completed: %s", report.SearchQuery))
+			storeInstance.StoreReport(&report, loggers.LOGGER_COORDINATOR)
 			i.Store.HydrateTags()
 		}
 	}()

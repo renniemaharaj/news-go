@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/renniemaharaj/news-go/internal/document"
+	"github.com/renniemaharaj/news-go/internal/loggers"
 )
 
 func (s *Instance) DeleteByTitle(title string) error {
@@ -18,12 +19,12 @@ func (s *Instance) DeleteByTitle(title string) error {
 
 	filePath := filepath.Join(reportsDir, key+".json")
 	if err := os.Remove(filePath); err != nil {
-		s.l.Error(fmt.Sprintf("Failed to remove file: %s", filePath))
+		loggers.LOGGER_STORE.Error(fmt.Sprintf("Failed to remove file: %s", filePath))
 		return err
 	}
 
 	delete(s.reportsByTitle, key)
-	s.l.Info(fmt.Sprintf("Removed report: %s", title))
+	loggers.LOGGER_STORE.Info(fmt.Sprintf("Removed report: %s", title))
 	return nil
 }
 
@@ -47,9 +48,9 @@ func (s *Instance) DeleteResultByTitles(reportTitle, resultTitle string) error {
 
 	if found {
 		report.Results = newResults
-		s.StoreReport(report, s.l)
+		s.StoreReport(report, loggers.LOGGER_STORE)
 
-		s.l.Info(fmt.Sprintf("Removed result %q from report %q", resultTitle, reportTitle))
+		loggers.LOGGER_STORE.Info(fmt.Sprintf("Removed result %q from report %q", resultTitle, reportTitle))
 		return nil
 
 	}

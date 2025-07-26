@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/renniemaharaj/grouplogs/pkg/logger"
 	"github.com/renniemaharaj/news-go/internal/http/commands"
-	"github.com/renniemaharaj/news-go/internal/log"
 )
 
 type Instance struct {
@@ -25,7 +25,7 @@ func CreateMessageHandler(minInterval time.Duration) *Instance {
 }
 
 // Primary message handling function that forces limits and protects command handler
-func (i *Instance) HandleMessage(con *websocket.Conn, message []byte, l *log.Logger) {
+func (i *Instance) HandleMessage(con *websocket.Conn, message []byte, l *logger.Logger) {
 	now := time.Now()
 
 	i.mu.Lock()

@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/renniemaharaj/grouplogs/pkg/logger"
 	"github.com/renniemaharaj/news-go/internal/document"
 	"github.com/renniemaharaj/news-go/internal/instructions"
-	"github.com/renniemaharaj/news-go/internal/log"
 )
 
-func Transform(result *document.Result, l *log.Logger) (document.Result, error) {
+func Transform(result *document.Result, l *logger.Logger) (document.Result, error) {
 	var err error
 
 	if result.TextContent == "" {

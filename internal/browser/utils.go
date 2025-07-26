@@ -7,13 +7,12 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/renniemaharaj/grouplogs/pkg/logger"
 	"golang.org/x/net/html"
-
-	"github.com/renniemaharaj/news-go/internal/log"
 )
 
 // Responsible for getting link elements's href
-func GetLinkAttribute(t html.Token, l *log.Logger) (string, bool) {
+func GetLinkAttribute(t html.Token, l *logger.Logger) (string, bool) {
 	if t.Data != "a" {
 		return "", false
 	}

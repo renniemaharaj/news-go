@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/renniemaharaj/grouplogs/pkg/logger"
 	"github.com/renniemaharaj/news-go/internal/config"
 	"github.com/renniemaharaj/news-go/internal/document"
-	"github.com/renniemaharaj/news-go/internal/log"
 )
 
 // Coordinator's search routine
-func Search(l *log.Logger, PARENT chan document.Report, CHILD chan document.Report) {
+func Search(l *logger.Logger, PARENT chan document.Report, CHILD chan document.Report) {
 
 	for {
 		select {
@@ -24,8 +24,8 @@ func Search(l *log.Logger, PARENT chan document.Report, CHILD chan document.Repo
 }
 
 // Helper function
-func search(r *document.Report, l *log.Logger) {
-	err := r.CollectResults(l, config.Get().NumSitesPerQuery)
+func search(r *document.Report, l *logger.Logger) {
+	err := r.FindArticles(l, config.Get().NumSitesPerQuery)
 	if err != nil {
 		l.Error(fmt.Sprintf("Error collecting result %s", err.Error()))
 	}

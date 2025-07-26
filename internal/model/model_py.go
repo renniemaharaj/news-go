@@ -7,19 +7,18 @@ import (
 	"os/exec"
 	"sync"
 
-	"github.com/renniemaharaj/news-go/internal/log"
+	"github.com/renniemaharaj/news-go/internal/loggers"
 )
 
 type Instance struct {
 	mu sync.Mutex
-	l  *log.Logger
 }
 
 var modelFile = "gemma.py"
 
 func (i *Instance) Prompt_Py(msg string) (string, error) {
 	i.mu.Lock()
-	i.l.Info("Analyzing content")
+	loggers.LOGGER_TRANSFORMER.Info("Analyzing content")
 	key := <-apiKeys
 	defer func() {
 		apiKeys <- key

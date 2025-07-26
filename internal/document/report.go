@@ -3,8 +3,8 @@ package document
 import (
 	"fmt"
 
+	"github.com/renniemaharaj/grouplogs/pkg/logger"
 	"github.com/renniemaharaj/news-go/internal/browser"
-	"github.com/renniemaharaj/news-go/internal/log"
 	"github.com/renniemaharaj/news-go/internal/utils"
 )
 
@@ -49,8 +49,8 @@ func (r *Report) HasTagIntersection(userTags []string) bool {
 	return false
 }
 
-func (r *Report) CollectResults(l *log.Logger, sitesPerQuery int) error {
-	results, err := browser.Get().Search(r.SearchQuery, sitesPerQuery)
+func (r *Report) FindArticles(l *logger.Logger, sitesPerQuery int) error {
+	results, err := browser.Search(r.SearchQuery, sitesPerQuery)
 	if err != nil {
 		l.Error(fmt.Sprintf("Error getting google results: %s", r.SearchQuery))
 		return err

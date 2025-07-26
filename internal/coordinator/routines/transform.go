@@ -3,13 +3,13 @@ package routines
 import (
 	"time"
 
+	"github.com/renniemaharaj/grouplogs/pkg/logger"
 	"github.com/renniemaharaj/news-go/internal/document"
-	"github.com/renniemaharaj/news-go/internal/log"
 	"github.com/renniemaharaj/news-go/internal/model"
 )
 
 // Coordinators transform routine
-func Transform(l *log.Logger, PARENT chan document.Report, CHILD chan document.Report) {
+func Transform(l *logger.Logger, PARENT chan document.Report, CHILD chan document.Report) {
 
 	for {
 		select {
@@ -24,7 +24,7 @@ func Transform(l *log.Logger, PARENT chan document.Report, CHILD chan document.R
 }
 
 // Helper function
-func transform(r *document.Report, l *log.Logger) {
+func transform(r *document.Report, l *logger.Logger) {
 	var results []document.Result
 	for i := range r.Results {
 		result, err := model.Transform(&r.Results[i], l)

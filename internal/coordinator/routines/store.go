@@ -3,12 +3,12 @@ package routines
 import (
 	"time"
 
+	"github.com/renniemaharaj/grouplogs/pkg/logger"
 	"github.com/renniemaharaj/news-go/internal/document"
-	"github.com/renniemaharaj/news-go/internal/log"
 )
 
 // Coordinators persist routine, and file routine in pipeline
-func Store(l *log.Logger, PARENT chan document.Report, CHILD chan document.Report) {
+func Store(l *logger.Logger, PARENT chan document.Report, CHILD chan document.Report) {
 
 	for {
 		select {
@@ -22,7 +22,7 @@ func Store(l *log.Logger, PARENT chan document.Report, CHILD chan document.Repor
 }
 
 // Helper function
-func store(r *document.Report, l *log.Logger) {
+func store(r *document.Report, l *logger.Logger) {
 	if len(r.Results) > 0 && r.Results[0].Title != "" {
 		r.Title = r.Results[0].Title
 		r.Date = time.Now().Format(time.RFC3339)

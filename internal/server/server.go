@@ -2,10 +2,9 @@ package server
 
 import (
 	"github.com/renniemaharaj/news-go/internal/http"
-	"github.com/renniemaharaj/news-go/internal/log"
+	"github.com/renniemaharaj/news-go/internal/loggers"
 )
 
 func Serve() {
-	l := log.CreateLogger("Server", 100, true, false, false)
-	http.ServeFrontend(l)
+	http.ServeFrontend(loggers.LOGGER_SERVER)
 }

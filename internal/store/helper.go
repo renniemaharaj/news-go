@@ -3,8 +3,8 @@ package store
 import (
 	"time"
 
+	"github.com/renniemaharaj/grouplogs/pkg/logger"
 	"github.com/renniemaharaj/news-go/internal/document"
-	"github.com/renniemaharaj/news-go/internal/log"
 )
 
 // Reports forEach method
@@ -26,7 +26,7 @@ func (s *Instance) Filter(predicate func(string, *document.Report) bool) []*docu
 }
 
 // Returns a []string of updated reports
-func (i *Instance) GetUpdatedReports(l *log.Logger) []string {
+func (i *Instance) GetUpdatedReports(l *logger.Logger) []string {
 	titles := make([]string, 0)
 
 	i.ForEach(func(k string, r *document.Report) {

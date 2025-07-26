@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/renniemaharaj/grouplogs/pkg/logger"
 	"github.com/renniemaharaj/news-go/internal/document"
-	"github.com/renniemaharaj/news-go/internal/log"
 )
 
-func (s *Instance) StoreReport(r *document.Report, l *log.Logger) {
+func (s *Instance) StoreReport(r *document.Report, l *logger.Logger) {
 	// Create reports directory if it doesn't exist
 	if err := os.MkdirAll(reportsDir, 0755); err != nil {
 		l.Error(fmt.Sprintf(("Failed to create reports directory: %s"), err.Error()))

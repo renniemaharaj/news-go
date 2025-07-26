@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/renniemaharaj/news-go/internal/log"
+	"github.com/renniemaharaj/grouplogs/pkg/logger"
 )
 
 // HealthHandler responds to healthcheck requests
@@ -16,7 +16,7 @@ func HealthHandler(version string) http.HandlerFunc {
 	}
 }
 
-func HealthCheckScheduler(apiURL string, l *log.Logger) {
+func HealthCheckScheduler(apiURL string, l *logger.Logger) {
 
 	go func() {
 		ticker := time.NewTicker(30 * time.Second) // Health check every 30 seconds

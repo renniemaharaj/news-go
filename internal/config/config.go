@@ -6,7 +6,7 @@ import (
 	"os"
 	"sync"
 
-	"github.com/renniemaharaj/news-go/internal/log"
+	"github.com/renniemaharaj/news-go/internal/loggers"
 )
 
 type Instance struct {
@@ -15,7 +15,6 @@ type Instance struct {
 	SearchQueries    []string `json:"searchQueries"`
 	NumSitesPerQuery int      `json:"num_sites_per_query"`
 
-	l  *log.Logger
 	mu sync.Mutex
 }
 
@@ -35,7 +34,6 @@ func Initialize() {
 		panic("Configuration is corrupted")
 	}
 
-	cfg.l = createLogger()
 	singleton = &cfg
 }
 
@@ -61,6 +59,6 @@ func (i *Instance) Write() error {
 		return fmt.Errorf("failed to write config file: %w", err)
 	}
 
-	i.l.Success("Configuration file written")
+	loggers.LOGGER_CFX.Success("Configuration file written")
 	return nil
 }

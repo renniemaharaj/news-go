@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/renniemaharaj/news-go/internal/config"
+	"github.com/renniemaharaj/news-go/internal/loggers"
 	"github.com/renniemaharaj/news-go/internal/store"
 )
 
@@ -16,7 +17,7 @@ func (i *Instance) auditStoreRoutineScheduler(storeInstance *store.Instance) {
 			i.auditStoreRoutine(storeInstance)
 		}
 	}()
-	i.l.Info("Scheduled periodic audit routine")
+	loggers.LOGGER_COORDINATOR.Info("Scheduled periodic audit routine")
 }
 
 func (i *Instance) auditStoreRoutine(storeInstance *store.Instance) {
@@ -25,6 +26,6 @@ func (i *Instance) auditStoreRoutine(storeInstance *store.Instance) {
 	searchQueriesMap := store.StringSliceToSanitizedEmptyStructMap(searchQueries)
 
 	// 2) Shake the store, removing irrelevant reports
-	i.l.Info("Shaking store")
+	loggers.LOGGER_COORDINATOR.Info("Shaking store")
 	storeInstance.ShakeStore(searchQueriesMap)
 }

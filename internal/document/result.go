@@ -3,8 +3,8 @@ package document
 import (
 	"fmt"
 
+	"github.com/renniemaharaj/grouplogs/pkg/logger"
 	"github.com/renniemaharaj/news-go/internal/browser"
-	"github.com/renniemaharaj/news-go/internal/log"
 	"github.com/renniemaharaj/news-go/internal/utils"
 )
 
@@ -32,9 +32,9 @@ func (r *Result) HasTagIntersection(queryTags []string) bool {
 	return false
 }
 
-// Function requests and returns http response to reduce required requests
-func (r *Result) RequestContent(l *log.Logger) error {
-	textContent, images, err := browser.Get().Content(r.HREF)
+// This function hydrates the result with text content and images by reading the site
+func (r *Result) Hydrate(l *logger.Logger) error {
+	textContent, images, err := browser.Content(r.HREF)
 	if err != nil {
 		l.Error(fmt.Sprintf("Failed to read site: %s", r.HREF))
 		return err

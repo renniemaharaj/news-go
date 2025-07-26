@@ -1,23 +1,9 @@
 package browser
 
 import (
-	"sync"
-
-	"github.com/go-rod/rod"
-	"github.com/go-rod/rod/lib/launcher"
-
-	"github.com/renniemaharaj/news-go/internal/log"
+	grf "github.com/renniemaharaj/go-rod-fast/pkg/browser"
+	"github.com/renniemaharaj/news-go/internal/loggers"
 )
-
-type Instance struct {
-	rod     *rod.Browser
-	once    sync.Once
-	initErr error
-	l       *log.Logger
-	m       sync.Mutex
-}
-
-var singleton *Instance
 
 // Skip known domains that aren’t news sources
 var skipDomains = map[string]struct{}{
@@ -31,31 +17,18 @@ var skipDomains = map[string]struct{}{
 	"maps.google.com":                {},
 }
 
-// Initialize launches the singleton browser instance
-func Initialize() error {
-	singleton = &Instance{}
-	singleton.l = createLogger()
-	singleton.once.Do(func() {
-		path := launcher.New().Headless(true).
-			Leakless(true).
-			Set("disable-blink-features", "AutomationControlled").
-			MustLaunch()
+var singleton *grf.Browser
 
-		singleton.rod = rod.New().ControlURL(path)
-		singleton.initErr = singleton.rod.Connect()
-		if singleton.initErr != nil {
-			singleton.l.Error("Browser failed to connect: " + singleton.initErr.Error())
-		}
-	})
-	return singleton.initErr
+func checkError(err error) {
+	if err != nil {
+		loggers.LOGGER_BROWSER.Fatal(err)
+	}
 }
 
-// Get returns the singleton instance, initializing if necessary
-func Get() *Instance {
+func Get() *grf.Browser {
 	if singleton == nil {
-		if err := Initialize(); err != nil {
-			return nil
-		}
+		singleton = grf.Create(false)
 	}
+
 	return singleton
 }

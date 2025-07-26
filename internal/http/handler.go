@@ -8,11 +8,12 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/renniemaharaj/grouplogs/pkg/logger"
 	"github.com/renniemaharaj/news-go/internal/config"
 	"github.com/renniemaharaj/news-go/internal/coordinator"
 	"github.com/renniemaharaj/news-go/internal/health"
 	"github.com/renniemaharaj/news-go/internal/http/commands"
-	"github.com/renniemaharaj/news-go/internal/log"
+	"github.com/renniemaharaj/news-go/internal/loggers"
 )
 
 // The upgrader to be used later for upgrading with cors configuration or not :(
@@ -26,7 +27,8 @@ var wsUpgrade = websocket.Upgrader{
 func upgradeHandler(w http.ResponseWriter, r *http.Request) {
 	connection, _ := wsUpgrade.Upgrade(w, r, nil)
 
-	l := log.CreateLogger("Socket", 100, true, false, false)
+	l := loggers.LOGGER_SOCKET
+
 	l.Info(fmt.Sprintf("%s client connected", html.EscapeString(r.URL.Path)))
 
 	tagsAvailableBytes, err := json.Marshal(coordinator.Get().Store.TagsAvailable)
@@ -51,7 +53,7 @@ func upgradeHandler(w http.ResponseWriter, r *http.Request) {
 var distDir = "./dist"
 
 // Primary open function for starting server
-func ServeFrontend(l *log.Logger) {
+func ServeFrontend(l *logger.Logger) {
 	http.HandleFunc("/ws", upgradeHandler)                         // WebSocket route
 	http.HandleFunc("/healthcheck", health.HealthHandler("1.0.0")) // Health check route
 

@@ -6,34 +6,20 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-	"time"
+
+	grf "github.com/renniemaharaj/go-rod-fast/pkg/browser"
+	"github.com/renniemaharaj/news-go/internal/loggers"
 )
 
 // Browser searching method, returns search results using Rod
-func (i *Instance) Search(query string, numSitesPerQuery int) ([]string, error) {
-	i.m.Lock()
-	defer i.m.Unlock()
-
-	if i.rod == nil {
-		Initialize()
-		return Get().Search(query, numSitesPerQuery)
-	}
-
-	i.l.Info("Searching for: " + query)
-
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	i.rod.Context(ctx)
-	defer cancel()
-
+func Search(query string, numSitesPerQuery int) ([]string, error) {
 	searchURL := "https://www.google.com/search?q=" + url.QueryEscape(query) + "&num=10&tbm=nws&tbs=qdr:d"
 
-	page := i.rod.MustPage()
-	defer page.MustClose()
+	b := Get()
+	page, err := b.NewPage(grf.ProtoTargetFromStr(searchURL), context.Background())
+	checkError(err)
+	defer page.Close()
 
-	page.MustNavigate(searchURL)
-
-	spoofBrowser(page, i.l)
-	page.MustWaitLoad().MustWaitIdle()
 	page.MustElement("div#search")
 
 	links := page.MustElements("a")
@@ -60,7 +46,7 @@ func (i *Instance) Search(query string, numSitesPerQuery int) ([]string, error) 
 
 		parsed, err := url.Parse(extracted)
 		if err != nil || parsed.Scheme == "" || parsed.Host == "" {
-			i.l.Warning(fmt.Sprintf("Skipping invalid URL: %s", extracted))
+			loggers.LOGGER_BROWSER.Warning(fmt.Sprintf("Skipping invalid URL: %s", extracted))
 			continue
 		}
 
@@ -70,13 +56,13 @@ func (i *Instance) Search(query string, numSitesPerQuery int) ([]string, error) 
 
 		respCheck, err := http.Head(extracted)
 		if err != nil || respCheck.StatusCode == http.StatusNotFound {
-			i.l.Warning(fmt.Sprintf("Skipping 404 or dead link: %s", extracted))
+			loggers.LOGGER_BROWSER.Warning(fmt.Sprintf("Skipping 404 or dead link: %s", extracted))
 			continue
 		}
 
 		results = append(results, extracted)
 	}
 
-	i.l.Info(fmt.Sprintf("Found %d results for query: %s", len(results), query))
+	loggers.LOGGER_BROWSER.Info(fmt.Sprintf("Found %d results for query: %s", len(results), query))
 	return results, nil
 }

@@ -5,13 +5,13 @@ import (
 	"net/url"
 
 	"github.com/gorilla/websocket"
+	"github.com/renniemaharaj/grouplogs/pkg/logger"
 	"github.com/renniemaharaj/news-go/internal/coordinator"
 	"github.com/renniemaharaj/news-go/internal/document"
-	"github.com/renniemaharaj/news-go/internal/log"
 	"github.com/renniemaharaj/news-go/internal/reporter"
 )
 
-func searchHandler(c *Command, con *websocket.Conn, l *log.Logger) {
+func searchHandler(c *Command, con *websocket.Conn, l *logger.Logger) {
 	r, EXPOSE := reporter.CreateReporter(l)
 
 	go func() {

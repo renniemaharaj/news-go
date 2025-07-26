@@ -3,12 +3,12 @@ package routines
 import (
 	"time"
 
+	"github.com/renniemaharaj/grouplogs/pkg/logger"
 	"github.com/renniemaharaj/news-go/internal/document"
-	"github.com/renniemaharaj/news-go/internal/log"
 )
 
 // Coordinators Content routine
-func Content(l *log.Logger, PARENT chan document.Report, CHILD chan document.Report) {
+func Content(l *logger.Logger, PARENT chan document.Report, CHILD chan document.Report) {
 
 	for {
 		select {
@@ -22,8 +22,8 @@ func Content(l *log.Logger, PARENT chan document.Report, CHILD chan document.Rep
 }
 
 // Helper function
-func content(r *document.Report, l *log.Logger) {
+func content(r *document.Report, l *logger.Logger) {
 	for i := range r.Results {
-		r.Results[i].RequestContent(l)
+		r.Results[i].Hydrate(l)
 	}
 }
